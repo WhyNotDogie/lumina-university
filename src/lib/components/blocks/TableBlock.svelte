@@ -20,13 +20,13 @@ $: columns = block.children?.[0].children.length ?? 0
     {/each}
 </div>
 <style lang="stylus">
-@import "variables"
+@import variables
 
 .grid-table
     display grid
     border-radius 4px
     width 100%
-    grid-template-columns repeat( var(--columns), 1fr)
+    grid-template-columns repeat( var(--columns), fit-content(100%))
     overflow hidden
     border-left 1px solid transparify(white, 8%)
     border-top 1px solid transparify(white, 8%)

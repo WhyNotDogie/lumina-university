@@ -127,7 +127,7 @@ afterNavigate(() => {
                 </div>
                 <div class="footer">
                     <div class="footer-links">
-                        <a href="/about">Home</a>
+                        <a href="/">Home</a>
                         <Icon
                             icon={Circle}
                             opacity={0.5}
@@ -156,7 +156,7 @@ afterNavigate(() => {
 </div>
 
 <style lang="stylus">
-@import "variables"
+@import variables
 
 .nav-wrapper
     position fixed

@@ -6,18 +6,21 @@ import Icon from "$lib/display/Icon.svelte"
 import { page } from "$app/stores"
 import { MessageType } from "$lib/types/message"
 import ButtonSound from "$lib/sounds/ButtonSound.wav"
+import Tag from "$lib/display/Tag.svelte"
+import { onMount, tick } from "svelte"
 export let block: Code
+export let editable = false
 
 let pre: HTMLPreElement
+let textarea: HTMLTextAreaElement
+let code: HTMLElement
 
 $: highlighted_code = hljs.highlight(block.value, {
     language: block.lang || "plaintext",
 })
 
 $: lines = highlighted_code.value.split("\n")
-
 $: digits = lines.length.toString().length
-
 $: numbers = lines.map((_, i) => {
     const number = (i + 1).toString()
 
@@ -35,12 +38,17 @@ function copy() {
 }
 
 </script>
-<pre bind:this={ pre }>
+<pre
+    bind:this={ pre }
+    class:editable>
     <div
         class="header"
         class:show-header={ block.lang }>
         {#if block.lang}
-            <div class="language">{ block.lang }</div>
+            <Tag>{ block.lang }</Tag>
+        {/if}
+        {#if editable}
+            <Tag color="green">Editable</Tag>
         {/if}
         <div
             class="copy"
@@ -49,7 +57,7 @@ function copy() {
             <Icon icon={ContentCopy}/>
         </div>
     </div>
-    <code>
+    <code bind:this={ code }>
         <div class="line">
             <div class="number small">{ Array(digits).fill(" ").join("") }</div>
         </div>
@@ -60,13 +68,21 @@ function copy() {
                 <div class="code">{@html line}</div>
             </div>
         {/each}
+        {#if editable}
+            <div class="line textarea">
+                <div class="number">{ Array(digits).fill(" ").join("") }</div>
+                <textarea
+                    bind:this={ textarea }
+                    bind:value={ block.value }/>
+            </div>
+        {/if}
         <div class="line">
             <div class="number small">{ Array(digits).fill(" ").join("") }</div>
         </div>
     </code>
 </pre>
 <style lang="stylus">
-@import "variables"
+@import variables
 
 .copy
     display inline-flex
@@ -86,6 +102,7 @@ function copy() {
 .header
     border-bottom 1px solid transparify(white, 10%)
     padding 4px
+    gap 6px
     display contents
     align-items center
     justify-content space-between
@@ -98,21 +115,11 @@ function copy() {
             right 0
             margin 10px
 
-
-
-.language
-    font-size 14px
-    background transparify(white, 10%)
-    padding 4px 8px
-    border-radius 4px
-    display inline-flex
-    line-height 1em
-
 .number
-    white-space pre-wrap
+    white-space pre
     color white
     user-select none
-    background transparify(white, 10%)
+    background transparify(white, 6%)
     padding 0 8px
     letter-spacing 2px
     .zero
@@ -125,22 +132,58 @@ function copy() {
 pre
     position relative
     font-size 14px
-    background transparify(white, 8%)
+    background transparify(white, 6%)
     font-family "Source Code Pro", monospace
     border-radius 4px
+    &.editable
+        border-radius 0
     width 100%
     white-space normal
+
+.textarea
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    padding-top 8px
+    padding-bottom 8px
+    .number
+        opacity 0
+
+textarea
+    font-size inherit
+    line-height inherit
+    white-space pre-wrap
+    // word-break break-all
+    font-family inherit
+    width 100%
+    z-index 1
+    color transparent
+    resize none
+    background transparent
+    opacity 1
+    outline none
+    caret-color white
+    padding 0
+    height 100%
+    margin 0
 
 code
     width 100%
     display block
+    position relative
+
+.code
+    white-space pre-wrap
+    max-width 100%
+    // word-break break-all
+    overflow-wrap anywhere
+
 .line
     display flex
     gap 16px
     padding-right 16px
-
-.code
-    white-space pre-wrap
 
 :global
     .hljs-comment,

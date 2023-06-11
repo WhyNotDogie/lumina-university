@@ -1,12 +1,10 @@
 <PageHead title={data.course.name + " » " + unit.name}/>
 <script lang="ts">
 import Subheading from "$lib/display/Subheading.svelte"
-import Button from "$lib/controls/Button.svelte"
 import MarkdownRenderer from "$lib/display/MarkdownRenderer.svelte"
 import TableOfContents from "./TableOfContents.svelte"
 import ScrollbarRegion from "$lib/controls/ScrollbarRegion.svelte"
 import CourseBreadcrumbs from "./CourseBreadcrumbs.svelte"
-import Pencil from "svelte-material-icons/Pencil.svelte"
 import type { Unit } from "$lib/types/unit"
 import UnitPaginator from "./UnitPaginator.svelte"
 import { flatten_units } from "$lib/utils/unit"
@@ -134,15 +132,6 @@ function get_unit_relative(unit: Unit, direction: "previous" | "next"): Unit | n
                             direction="next"
                             unit={next_unit}/>
                     </div>
-
-                    <div class="section">
-                        <Button
-                            style="transparent"
-                            href="https://github.com/lumina-gov/lumina-university/edit/main/src/lib/courses/{data.course.course_slug}/{data.unit.unit_slug}.md"
-                            left_icon={Pencil}>
-                            Edit this page on GitHub
-                        </Button>
-                    </div>
                 </div>
             </div>
             <div class="toc">
@@ -160,7 +149,7 @@ function get_unit_relative(unit: Unit, direction: "previous" | "next"): Unit | n
 </div>
 
 <style lang="stylus">
-@import "variables"
+@import variables
 
 .crumb-bar
     display flex
